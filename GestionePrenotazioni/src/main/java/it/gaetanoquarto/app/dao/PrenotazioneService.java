@@ -1,5 +1,7 @@
 package it.gaetanoquarto.app.dao;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +18,13 @@ public class PrenotazioneService {
         prenotazioneRepo.save(pre);
         System.out.println("Prenotazione inserita correttamente!");
     }
+    public long getCountPrenotazioni(LocalDate data, int id) {
+    	return prenotazioneRepo.getCountPrenotazioni(data,id);
+    }
+    public long getCountPrenotazioniUtente(LocalDate data, int id) {
+    	return prenotazioneRepo.getCountPrenotazioniUtente(data,id);
+    }
+    
+
 
 }

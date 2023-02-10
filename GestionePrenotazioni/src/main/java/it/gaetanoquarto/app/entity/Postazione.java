@@ -49,7 +49,6 @@ public class Postazione {
 	@OneToMany(mappedBy = "postazione")
 	private Set<Prenotazione> prenotazioni;
 
-	private boolean isLibero;
 
 	@Override
 	public String toString() {

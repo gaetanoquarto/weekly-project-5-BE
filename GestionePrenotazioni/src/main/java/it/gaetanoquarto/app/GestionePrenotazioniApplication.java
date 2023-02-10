@@ -62,14 +62,13 @@ public class GestionePrenotazioniApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		gestore();
-		//findAllPostazioni();
-
 		((AnnotationConfigApplicationContext) ctxE).close();
 		((AnnotationConfigApplicationContext) ctxP).close();
 		((AnnotationConfigApplicationContext) ctxU).close();
 		((AnnotationConfigApplicationContext) ctxPren).close();
 	}
 
+	
 	public void gestore() {
 		try {
 			System.out.println("Benvenuto nel gestore di prenotazioni");
@@ -187,7 +186,23 @@ public class GestionePrenotazioniApplication implements CommandLineRunner {
 		System.out.println("inserisci ID utente");
 		int idUser = in.nextInt();
 		Utente utente = getUtente(idUser);
-		insertPrenotazione(dataPrenotazione, dataScad, postazione, utente);
+		//CHECK
+		long countElementi = prens.getCountPrenotazioni(dataPrenotazione, idPos);
+		System.out.println(countElementi);
+		int nMaxOccupanti = postazione.getNMaxOccupanti();
+		if(countElementi == nMaxOccupanti) {
+			System.out.println("La postazione " + idPos + " è completa per la data scelta! Non puoi prenotare!");
+			System.exit(0);
+		} else if(countElementi < nMaxOccupanti){
+			long contaElementi = prens.getCountPrenotazioniUtente(dataPrenotazione, idUser);
+			if(contaElementi >= 1) {
+				System.out.println("Hai già una prenotazione per questa data. Non puoi prenotare altre postazioni!");
+				System.exit(0);
+			} else {
+				insertPrenotazione(dataPrenotazione, dataScad, postazione, utente);
+
+			}
+		}
 	}
 
 	private Utente getUtente(int idUser) {
@@ -227,6 +242,9 @@ public class GestionePrenotazioniApplication implements CommandLineRunner {
 		});
 	}
 	
+	public void check(String data, int id) {
+		
+	}
 
 	// -----METODI PER GESTORE------
 	public void selezioneAmministrazione() {
@@ -319,7 +337,6 @@ public class GestionePrenotazioniApplication implements CommandLineRunner {
 	public Postazione insertPostazione(int nMaxOccupanti, TipoPostazione tipo, Edificio edificio) {
 		Postazione pos = (Postazione) ctxP.getBean("pos");
 		pos.setEdificio(edificio);
-		pos.setLibero(true);
 		pos.setNMaxOccupanti(nMaxOccupanti);
 		pos.setTipo(tipo);
 		ps.insertPostazione(pos);
